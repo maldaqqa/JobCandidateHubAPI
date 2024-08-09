@@ -33,3 +33,16 @@ This project is a web application with a REST API for storing job candidate info
   "linkedInUrl": "string",
   "gitHubUrl": "string"
 }
+```
+
+## Assumptions
+- **SQLite is currently used for storage, but you can use any of the availabe Database providers available in the `appsettings.json`.**
+- **The application is designed to be extendable for future storage migrations.**
+
+## Improvments
+- **Implement more detailed validation and error handling.**
+- **Utilize caching for frequently accessed data.**
+- **Expand unit test coverage to include more edge cases.**
+
+## Time Spent
+**Total:** 5 hours

@@ -4,12 +4,18 @@ namespace JobCandidateHubAPI.Models
 {
     public class CandidateDto
     {
-        public CandidateDto(string firstName, string lastName, string email, string comment)
+        public CandidateDto(string firstName, string lastName, string email, string comment,
+            string? phoneNumber = null, string? callInterval = null,
+            string? linkedInUrl = null, string? gitHubUrl = null)
         {
             FirstName = firstName;
             LastName = lastName;
             Email = email;
             Comment = comment;
+            PhoneNumber = phoneNumber;
+            CallInterval = callInterval;
+            LinkedInUrl = linkedInUrl;
+            GitHubUrl = gitHubUrl;
         }
 
         [Required(ErrorMessage = "First name is required.")]

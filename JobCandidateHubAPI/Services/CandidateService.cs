@@ -1,6 +1,7 @@
 ﻿using JobCandidateHubAPI.Models;
 using JobCandidateHubAPI.Repositories;
 using AutoMapper;
+using JobCandidateHubAPI.Controllers;
 
 namespace JobCandidateHubAPI.Services
 {
@@ -8,26 +9,37 @@ namespace JobCandidateHubAPI.Services
     {
         private readonly ICandidateRepository _repository;
         private readonly IMapper _mapper;
+        private readonly ILogger<CandidatesController> _logger;
 
-        public CandidateService(ICandidateRepository repository, IMapper mapper)
+        public CandidateService(ICandidateRepository repository, IMapper mapper, ILogger<CandidatesController> logger)
         {
             _repository = repository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task AddOrUpdateCandidateAsync(CandidateDto candidateDto)
         {
-            var existingCandidate = await _repository.GetByEmailAsync(candidateDto.Email);
-            if (existingCandidate == null)
+            try
             {
-                var candidate = _mapper.Map<Candidate>(candidateDto);
-                await _repository.AddAsync(candidate);
+                var existingCandidate = await _repository.GetByEmailAsync(candidateDto.Email);
+                if (existingCandidate == null)
+                {
+                    var candidate = _mapper.Map<Candidate>(candidateDto);
+                    await _repository.AddAsync(candidate);
+                }
+                else
+                {
+                    _mapper.Map(candidateDto, existingCandidate);
+                    await _repository.UpdateAsync(existingCandidate);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                _mapper.Map(candidateDto, existingCandidate);
-                await _repository.UpdateAsync(existingCandidate);
+                _logger.LogError(ex, "An error occurred in the AddOrUpdateCandidateAsync method.");
+                throw;
             }
         }
+
     }
 }

@@ -1,4 +1,5 @@
 using JobCandidateHubAPI.Data;
+using JobCandidateHubAPI.Middlewares;
 using JobCandidateHubAPI.Repositories;
 using JobCandidateHubAPI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -58,6 +59,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configure logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -66,6 +72,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Use the custom exception handling middleware
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 
 app.UseHttpsRedirection();
 

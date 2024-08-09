@@ -1,6 +1,7 @@
 ﻿using JobCandidateHubAPI.Models;
 using JobCandidateHubAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace JobCandidateHubAPI.Controllers
 {
@@ -9,10 +10,12 @@ namespace JobCandidateHubAPI.Controllers
     public class CandidatesController : ControllerBase
     {
         private readonly ICandidateService _service;
+        private readonly ILogger<CandidatesController> _logger;
 
-        public CandidatesController(ICandidateService service)
+        public CandidatesController(ICandidateService service, ILogger<CandidatesController> logger)
         {
             _service = service;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -23,8 +26,16 @@ namespace JobCandidateHubAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _service.AddOrUpdateCandidateAsync(candidateDto);
-            return Ok();
+            try
+            {
+                await _service.AddOrUpdateCandidateAsync(candidateDto);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding or updating candidate.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
     }
 }

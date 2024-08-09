@@ -1,11 +1,29 @@
-﻿namespace JobCandidateHubAPI.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace JobCandidateHubAPI.Models
 {
     public class CandidateDto
     {
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Comment { get; set; } = string.Empty;
+        public CandidateDto(string firstName, string lastName, string email, string comment)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            Email = email;
+            Comment = comment;
+        }
+
+        [Required(ErrorMessage = "First name is required.")]
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Last name is required.")]
+        public string LastName { get; set; }
+
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid email address.")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Comment is required.")]
+        public string Comment { get; set; }
 
         public string? PhoneNumber { get; set; }
         public string? CallInterval { get; set; }
